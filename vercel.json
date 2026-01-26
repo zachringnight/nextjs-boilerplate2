@@ -1,8 +1,0 @@
-{
-  "functions": {
-    "api/write-to-notion.js": {
-      "runtime": "nodejs20.x",
-      "memory": 128
-    }
-  }
-}
