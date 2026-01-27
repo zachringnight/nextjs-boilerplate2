@@ -2,11 +2,103 @@
 
 import { useState } from "react";
 
+// Configuration - Mellisa can update these URLs
+const CONFIG = {
+  // Demo Reel - Add YouTube or Vimeo URL here
+  demoReelUrl: "", // e.g., "https://www.youtube.com/embed/VIDEO_ID" or "https://player.vimeo.com/video/VIDEO_ID"
+
+  // Social Media Links
+  instagram: "https://www.instagram.com/mellisagoodwin/",
+  imdb: "https://www.imdb.com/name/nm8475889/",
+  backstage: "https://www.backstage.com/u/mellisa-goodwin/",
+
+  // Contact Emails
+  representationEmail: "contact@mellisagoodwin.com",
+  pressEmail: "press@mellisagoodwin.com",
+};
+
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [videoModalOpen, setVideoModalOpen] = useState(false);
+  const [activeReel, setActiveReel] = useState<string | null>(null);
+
+  const openVideoModal = (reelType?: string) => {
+    setActiveReel(reelType || "main");
+    setVideoModalOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100">
+      {/* Video Modal */}
+      {videoModalOpen && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4"
+          onClick={() => setVideoModalOpen(false)}
+        >
+          <div
+            className="relative w-full max-w-5xl aspect-video bg-neutral-900 rounded-xl overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {CONFIG.demoReelUrl ? (
+              <iframe
+                src={CONFIG.demoReelUrl}
+                className="w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                title="Demo Reel"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-center p-8">
+                <div>
+                  <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-amber-500/20 flex items-center justify-center">
+                    <svg className="w-10 h-10 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <h3 className="font-serif text-2xl font-medium mb-4">Demo Reel Coming Soon</h3>
+                  <p className="text-neutral-400 mb-6 max-w-md mx-auto">
+                    {activeReel === "main"
+                      ? "The full demo reel is being updated with recent work."
+                      : `The ${activeReel} reel is being prepared.`}
+                  </p>
+                  <div className="flex flex-wrap justify-center gap-4">
+                    <a
+                      href={CONFIG.instagram}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-sans font-semibold rounded-full hover:opacity-90 transition-opacity"
+                    >
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                      </svg>
+                      Watch on Instagram
+                    </a>
+                    <a
+                      href={CONFIG.imdb}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-6 py-3 bg-amber-500 text-neutral-900 font-sans font-semibold rounded-full hover:bg-amber-400 transition-colors"
+                    >
+                      View IMDb
+                    </a>
+                  </div>
+                </div>
+              </div>
+            )}
+            {/* Close button */}
+            <button
+              onClick={() => setVideoModalOpen(false)}
+              className="absolute top-4 right-4 w-10 h-10 bg-neutral-800/80 hover:bg-neutral-700 rounded-full flex items-center justify-center transition-colors"
+              aria-label="Close video"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-neutral-950/90 backdrop-blur-md border-b border-neutral-800/50">
         <div className="max-w-7xl mx-auto px-6 py-4">
@@ -23,7 +115,7 @@ export default function Home() {
               <a href="#training" className="text-neutral-400 hover:text-amber-400 transition-colors duration-300">Training</a>
               <a href="#contact" className="text-neutral-400 hover:text-amber-400 transition-colors duration-300">Contact</a>
               <a
-                href="https://www.imdb.com/name/nm8475889/"
+                href={CONFIG.imdb}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-4 py-2 bg-amber-500 text-neutral-900 font-semibold rounded hover:bg-amber-400 transition-colors duration-300"
@@ -60,7 +152,7 @@ export default function Home() {
                 <a href="#training" onClick={() => setMobileMenuOpen(false)} className="text-neutral-400 hover:text-amber-400 transition-colors">Training</a>
                 <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="text-neutral-400 hover:text-amber-400 transition-colors">Contact</a>
                 <a
-                  href="https://www.imdb.com/name/nm8475889/"
+                  href={CONFIG.imdb}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-block px-4 py-2 bg-amber-500 text-neutral-900 font-semibold rounded text-center hover:bg-amber-400 transition-colors"
@@ -115,20 +207,44 @@ export default function Home() {
           </div>
 
           <div className="flex flex-wrap justify-center gap-4">
-            <a
-              href="#reel"
+            <button
+              onClick={() => openVideoModal()}
               className="group inline-flex items-center gap-2 px-8 py-4 bg-amber-500 text-neutral-900 font-sans font-semibold rounded-full hover:bg-amber-400 transition-all duration-300 hover:scale-105"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z"/>
               </svg>
               Watch Demo Reel
-            </a>
+            </button>
             <a
               href="#contact"
               className="inline-flex items-center gap-2 px-8 py-4 border-2 border-neutral-700 text-neutral-300 font-sans font-semibold rounded-full hover:border-amber-400 hover:text-amber-400 transition-all duration-300"
             >
               Contact for Booking
+            </a>
+          </div>
+
+          {/* Social Links */}
+          <div className="mt-12 flex justify-center gap-4">
+            <a
+              href={CONFIG.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 bg-neutral-800/50 border border-neutral-700 rounded-full hover:border-pink-500 hover:bg-pink-500/10 transition-all duration-300 group"
+              aria-label="Instagram"
+            >
+              <svg className="w-5 h-5 text-neutral-400 group-hover:text-pink-400 transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              </svg>
+            </a>
+            <a
+              href={CONFIG.imdb}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 bg-neutral-800/50 border border-neutral-700 rounded-full hover:border-amber-500 hover:bg-amber-500/10 transition-all duration-300 group"
+              aria-label="IMDb"
+            >
+              <span className="text-neutral-400 group-hover:text-amber-400 transition-colors font-bold text-sm">IMDb</span>
             </a>
           </div>
 
@@ -155,7 +271,18 @@ export default function Home() {
                     <div className="w-40 h-40 mx-auto mb-6 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
                       <span className="font-serif text-6xl font-bold text-neutral-900">MG</span>
                     </div>
-                    <p className="text-neutral-500 font-sans text-sm tracking-wide">Professional Headshot</p>
+                    <p className="text-neutral-500 font-sans text-sm tracking-wide mb-4">Professional Headshot</p>
+                    <a
+                      href={CONFIG.instagram}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-amber-400 hover:text-amber-300 font-sans text-sm transition-colors"
+                    >
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                      </svg>
+                      View Photos on Instagram
+                    </a>
                   </div>
                 </div>
               </div>
@@ -171,8 +298,8 @@ export default function Home() {
 
               <div className="font-sans text-neutral-300 space-y-6 leading-relaxed mb-12">
                 <p className="text-lg">
-                  Mellisa Goodwin is a professional actress based in Los Angeles, California,
-                  with a passion for bringing complex, authentic characters to life on screen.
+                  Mellisa Goodwin is a multi-talented actress, singer, and performer based in Los Angeles, California,
+                  with a passion for bringing complex, authentic characters to life on screen and stage.
                 </p>
                 <p>
                   Since beginning her professional acting career in 2017, Mellisa has built an impressive
@@ -185,7 +312,11 @@ export default function Home() {
                   the acclaimed NBC series <em>Law & Order: Special Victims Unit</em>, demonstrating her
                   range in the high-stakes courtroom drama "People vs. Richard Wheatley." Her work
                   continues to evolve with roles in independent cinema, including her portrayal of
-                  <em className="text-amber-400"> Mikaela</em> in the 2023 short film <em>We Never Sleep</em>.
+                  <em className="text-amber-400"> Mikaela</em> in the 2023 horror short film <em>We Never Sleep</em>.
+                </p>
+                <p>
+                  Beyond acting, Mellisa is also a talented singer-songwriter who has written music for Netflix
+                  productions, showcasing her versatility as a performing artist.
                 </p>
               </div>
 
@@ -220,8 +351,11 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Video Player Placeholder */}
-          <div className="relative aspect-video bg-neutral-900 rounded-xl overflow-hidden border border-neutral-800 shadow-2xl group cursor-pointer">
+          {/* Video Player */}
+          <div
+            className="relative aspect-video bg-neutral-900 rounded-xl overflow-hidden border border-neutral-800 shadow-2xl group cursor-pointer"
+            onClick={() => openVideoModal()}
+          >
             <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-transparent to-transparent"></div>
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center">
@@ -231,7 +365,7 @@ export default function Home() {
                   </svg>
                 </div>
                 <p className="font-sans text-lg text-neutral-300 mb-2">Demo Reel 2024</p>
-                <p className="font-sans text-sm text-neutral-500">2:30 minutes</p>
+                <p className="font-sans text-sm text-neutral-500">Click to play</p>
               </div>
             </div>
             {/* Decorative film strip pattern */}
@@ -249,9 +383,27 @@ export default function Home() {
 
           {/* Reel Categories */}
           <div className="grid sm:grid-cols-3 gap-6 mt-12">
-            <ReelCard title="Dramatic" duration="1:45" />
-            <ReelCard title="Comedy" duration="1:20" />
-            <ReelCard title="Commercial" duration="0:60" />
+            <ReelCard title="Dramatic" duration="1:45" onClick={() => openVideoModal("dramatic")} />
+            <ReelCard title="Comedy" duration="1:20" onClick={() => openVideoModal("comedy")} />
+            <ReelCard title="Commercial" duration="0:60" onClick={() => openVideoModal("commercial")} />
+          </div>
+
+          {/* Instagram Clips Section */}
+          <div className="mt-16 text-center">
+            <h3 className="font-sans text-sm tracking-widest uppercase text-amber-400 mb-6">
+              More Clips & Behind the Scenes
+            </h3>
+            <a
+              href={CONFIG.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 text-white font-sans font-semibold rounded-full hover:opacity-90 transition-all duration-300 hover:scale-105"
+            >
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              </svg>
+              Watch Clips on Instagram
+            </a>
           </div>
         </div>
       </section>
@@ -323,8 +475,8 @@ export default function Home() {
                 role="Mikaela"
                 type="Lead"
                 year="2023"
-                network="Short Film"
-                episode="Festival Circuit"
+                network="Short Film / Horror"
+                episode="Dark Warrior Entertainment"
               />
               <CreditRow
                 title="How to Get Girls"
@@ -336,24 +488,25 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Theatre Credits */}
+          {/* Music & Other Work */}
           <div>
             <div className="flex items-center gap-4 mb-8">
               <div className="p-3 bg-amber-500/10 rounded-lg">
                 <svg className="w-6 h-6 text-amber-400" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                  <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
                 </svg>
               </div>
-              <h3 className="font-serif text-2xl font-medium">Theatre</h3>
+              <h3 className="font-serif text-2xl font-medium">Music & Voice</h3>
             </div>
 
             <div className="space-y-4">
               <CreditRow
-                title="Available Upon Request"
-                role="Stage Credits"
-                type=""
-                year=""
-                network="Los Angeles Theatre"
+                title="Netflix Production"
+                role="Singer/Songwriter"
+                type="Original Song"
+                year="2023"
+                network="Netflix"
+                episode="Original music composition"
               />
             </div>
           </div>
@@ -399,6 +552,11 @@ export default function Home() {
                   institution="Dialect Coach"
                   description="Standard American, regional dialects"
                 />
+                <TrainingItem
+                  title="Stage Combat"
+                  institution="Combat Training"
+                  description="Certified in basic stage combat and stunts"
+                />
               </div>
             </div>
 
@@ -411,16 +569,20 @@ export default function Home() {
                 {[
                   "Legal/Courtroom Procedural",
                   "News Anchor/Reporter",
+                  "Singing (Alto)",
+                  "Songwriting",
                   "Improvisation",
                   "Teleprompter",
                   "Hosting",
                   "Commercial Work",
+                  "Stage Combat",
+                  "Stunts",
                   "Standard American Dialect",
                   "Southern Accent",
                   "British RP",
                   "Swimming",
                   "Yoga",
-                  "Basic Stage Combat",
+                  "Dance",
                   "Licensed Driver",
                   "Valid Passport"
                 ].map((skill) => (
@@ -476,7 +638,7 @@ export default function Home() {
                 For representation inquiries and professional bookings, please contact through official channels.
               </p>
               <a
-                href="mailto:contact@mellisagoodwin.com"
+                href={`mailto:${CONFIG.representationEmail}`}
                 className="inline-flex items-center gap-2 text-amber-400 font-sans font-medium hover:text-amber-300 transition-colors"
               >
                 Contact for Details
@@ -500,7 +662,7 @@ export default function Home() {
                 For press, media inquiries, and general questions about upcoming projects.
               </p>
               <a
-                href="mailto:press@mellisagoodwin.com"
+                href={`mailto:${CONFIG.pressEmail}`}
                 className="inline-flex items-center gap-2 text-amber-400 font-sans font-medium hover:text-amber-300 transition-colors"
               >
                 Send Message
@@ -516,29 +678,30 @@ export default function Home() {
             <h3 className="font-sans text-sm tracking-widest uppercase text-neutral-500 mb-6">
               Professional Profiles
             </h3>
-            <div className="flex justify-center gap-4">
+            <div className="flex flex-wrap justify-center gap-4">
               <a
-                href="https://www.imdb.com/name/nm8475889/"
+                href={CONFIG.imdb}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-4 bg-neutral-800/50 border border-neutral-700 rounded-xl hover:border-amber-400 hover:bg-amber-400/10 transition-all duration-300 group"
-                aria-label="IMDb Profile"
+                className="px-6 py-3 bg-neutral-800/50 border border-neutral-700 rounded-xl hover:border-amber-400 hover:bg-amber-400/10 transition-all duration-300 group"
               >
                 <span className="font-sans font-bold text-neutral-400 group-hover:text-amber-400 transition-colors">IMDb</span>
               </a>
               <a
-                href="#"
-                className="p-4 bg-neutral-800/50 border border-neutral-700 rounded-xl hover:border-amber-400 hover:bg-amber-400/10 transition-all duration-300 group"
-                aria-label="Actors Access"
+                href={CONFIG.backstage}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-3 bg-neutral-800/50 border border-neutral-700 rounded-xl hover:border-amber-400 hover:bg-amber-400/10 transition-all duration-300 group"
               >
-                <span className="font-sans font-bold text-neutral-400 group-hover:text-amber-400 transition-colors">Actors Access</span>
+                <span className="font-sans font-bold text-neutral-400 group-hover:text-amber-400 transition-colors">Backstage</span>
               </a>
               <a
-                href="#"
-                className="p-4 bg-neutral-800/50 border border-neutral-700 rounded-xl hover:border-amber-400 hover:bg-amber-400/10 transition-all duration-300 group"
-                aria-label="Casting Networks"
+                href={CONFIG.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-3 bg-neutral-800/50 border border-neutral-700 rounded-xl hover:border-pink-500 hover:bg-pink-500/10 transition-all duration-300 group"
               >
-                <span className="font-sans font-bold text-neutral-400 group-hover:text-amber-400 transition-colors">Casting Networks</span>
+                <span className="font-sans font-bold text-neutral-400 group-hover:text-pink-400 transition-colors">Instagram</span>
               </a>
             </div>
           </div>
@@ -551,11 +714,22 @@ export default function Home() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="text-center md:text-left">
               <p className="font-serif text-2xl text-amber-50 mb-2">Mellisa Goodwin</p>
-              <p className="font-sans text-sm text-neutral-500">Actress • Los Angeles, California</p>
+              <p className="font-sans text-sm text-neutral-500">Actress • Singer • Los Angeles, California</p>
             </div>
             <div className="flex items-center gap-6">
               <a
-                href="https://www.imdb.com/name/nm8475889/"
+                href={CONFIG.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-neutral-400 hover:text-pink-400 transition-colors"
+                aria-label="Instagram"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
+              </a>
+              <a
+                href={CONFIG.imdb}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-sans text-sm text-neutral-400 hover:text-amber-400 transition-colors"
@@ -593,9 +767,12 @@ function StatBox({ label, value }: { label: string; value: string }) {
 }
 
 // Component: Reel Card
-function ReelCard({ title, duration }: { title: string; duration: string }) {
+function ReelCard({ title, duration, onClick }: { title: string; duration: string; onClick: () => void }) {
   return (
-    <div className="group bg-neutral-900/50 border border-neutral-800 rounded-xl p-6 hover:border-amber-400/30 transition-all duration-300 cursor-pointer">
+    <div
+      className="group bg-neutral-900/50 border border-neutral-800 rounded-xl p-6 hover:border-amber-400/30 transition-all duration-300 cursor-pointer"
+      onClick={onClick}
+    >
       <div className="flex items-center justify-between">
         <div>
           <h4 className="font-sans font-medium text-neutral-200 group-hover:text-amber-400 transition-colors">{title}</h4>
