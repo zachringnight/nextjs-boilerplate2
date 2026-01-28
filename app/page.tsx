@@ -1,18 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
 
-// Configuration - Mellisa can update these URLs
+// Configuration
 const CONFIG = {
-  // Demo Reel - Add YouTube or Vimeo URL here
-  demoReelUrl: "", // e.g., "https://www.youtube.com/embed/VIDEO_ID"
-
-  // Social Media Links
+  demoReelUrl: "",
   instagram: "https://www.instagram.com/mellisagoodwin/",
   imdb: "https://www.imdb.com/name/nm8475889/",
   backstage: "https://www.backstage.com/u/mellisa-goodwin/",
-
-  // Contact Emails
   representationEmail: "contact@mellisagoodwin.com",
   pressEmail: "press@mellisagoodwin.com",
 };
@@ -20,577 +16,560 @@ const CONFIG = {
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [videoModalOpen, setVideoModalOpen] = useState(false);
-  const [activeReel, setActiveReel] = useState<string | null>(null);
-
-  const openVideoModal = (reelType?: string) => {
-    setActiveReel(reelType || "main");
-    setVideoModalOpen(true);
-  };
+  const heroRef = useRef(null);
+  const { scrollYProgress } = useScroll();
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
+  const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95]);
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] text-[#2C2824]">
+    <div className="min-h-screen bg-[#FAF8F5] text-[#2C2824] overflow-x-hidden">
       {/* Video Modal */}
-      {videoModalOpen && (
-        <div
-          className="fixed inset-0 z-[100] bg-[#2C2824]/80 backdrop-blur-sm flex items-center justify-center p-4"
-          onClick={() => setVideoModalOpen(false)}
-        >
-          <div
-            className="relative w-full max-w-5xl aspect-video bg-white rounded-2xl overflow-hidden shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
+      <AnimatePresence>
+        {videoModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4"
+            onClick={() => setVideoModalOpen(false)}
           >
-            {CONFIG.demoReelUrl ? (
-              <iframe
-                src={CONFIG.demoReelUrl}
-                className="w-full h-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                title="Demo Reel"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-center p-8 bg-gradient-to-br from-[#FAF8F5] to-[#F5F0E8]">
-                <div>
-                  <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-[#D4A574] to-[#B8956A] flex items-center justify-center shadow-lg">
-                    <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <h3 className="font-serif text-2xl font-medium mb-4 text-[#2C2824]">Demo Reel Coming Soon</h3>
-                  <p className="text-[#6B635B] mb-6 max-w-md mx-auto">
-                    {activeReel === "main"
-                      ? "The full demo reel is being updated with recent work."
-                      : `The ${activeReel} reel is being prepared.`}
-                  </p>
-                  <div className="flex flex-wrap justify-center gap-4">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ type: "spring", damping: 25 }}
+              className="relative w-full max-w-5xl aspect-video bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a] rounded-3xl overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {CONFIG.demoReelUrl ? (
+                <iframe src={CONFIG.demoReelUrl} className="w-full h-full" allowFullScreen title="Demo Reel" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <div className="text-center">
+                    <motion.div
+                      animate={{ scale: [1, 1.1, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                      className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-r from-[#D4A574] to-[#C9A86C] flex items-center justify-center"
+                    >
+                      <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                      </svg>
+                    </motion.div>
+                    <p className="text-white/80 text-lg mb-6">Demo Reel Coming Soon</p>
                     <a
                       href={CONFIG.instagram}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-sans font-semibold rounded-full hover:opacity-90 transition-opacity"
+                      className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full"
                     >
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                      </svg>
-                      Watch on Instagram
-                    </a>
-                    <a
-                      href={CONFIG.imdb}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-6 py-3 bg-[#D4A574] text-white font-sans font-semibold rounded-full hover:bg-[#B8956A] transition-colors"
-                    >
-                      View IMDb
+                      Watch clips on Instagram
                     </a>
                   </div>
                 </div>
-              </div>
-            )}
-            <button
-              onClick={() => setVideoModalOpen(false)}
-              className="absolute top-4 right-4 w-10 h-10 bg-white/90 hover:bg-white rounded-full flex items-center justify-center transition-colors shadow-lg"
-              aria-label="Close video"
-            >
-              <svg className="w-5 h-5 text-[#2C2824]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#FAF8F5]/90 backdrop-blur-md border-b border-[#E8CDB5]/30">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex justify-between items-center">
-            <a href="#" className="font-serif text-2xl tracking-wide text-[#2C2824]">
-              Mellisa <span className="text-[#D4A574]">🍯</span>
-            </a>
-
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-8 font-sans text-sm tracking-wider">
-              <a href="#about" className="text-[#6B635B] hover:text-[#D4A574] transition-colors duration-300">About</a>
-              <a href="#reel" className="text-[#6B635B] hover:text-[#D4A574] transition-colors duration-300">Reel</a>
-              <a href="#credits" className="text-[#6B635B] hover:text-[#D4A574] transition-colors duration-300">Credits</a>
-              <a href="#skills" className="text-[#6B635B] hover:text-[#D4A574] transition-colors duration-300">Skills</a>
-              <a href="#contact" className="text-[#6B635B] hover:text-[#D4A574] transition-colors duration-300">Contact</a>
-              <a
-                href={CONFIG.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 text-[#6B635B] hover:text-[#D4A574] transition-colors"
-                aria-label="Instagram"
+              )}
+              <button
+                onClick={() => setVideoModalOpen(false)}
+                className="absolute top-4 right-4 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm transition-all"
               >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                </svg>
-              </a>
-            </div>
-
-            {/* Mobile Menu Button */}
-            <button
-              className="md:hidden p-2 text-[#6B635B] hover:text-[#D4A574] transition-colors"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle menu"
-            >
-              {mobileMenuOpen ? (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
-              ) : (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              )}
-            </button>
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Floating Navigation */}
+      <motion.nav
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        className="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-6 py-3 bg-white/70 backdrop-blur-xl rounded-full shadow-lg shadow-black/5 border border-white/50"
+      >
+        <div className="flex items-center gap-6">
+          <a href="#" className="font-serif text-lg text-[#2C2824]">
+            MG <span className="text-[#D4A574]">🍯</span>
+          </a>
+          <div className="hidden md:flex items-center gap-4 text-sm">
+            {["About", "Work", "Skills", "Contact"].map((item) => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                className="px-3 py-1.5 text-[#6B635B] hover:text-[#D4A574] hover:bg-[#D4A574]/10 rounded-full transition-all"
+              >
+                {item}
+              </a>
+            ))}
           </div>
-
-          {/* Mobile Menu */}
-          {mobileMenuOpen && (
-            <div className="md:hidden mt-4 pb-4 border-t border-[#E8CDB5]/30 pt-4">
-              <div className="flex flex-col gap-4 font-sans text-sm tracking-wider">
-                <a href="#about" onClick={() => setMobileMenuOpen(false)} className="text-[#6B635B] hover:text-[#D4A574]">About</a>
-                <a href="#reel" onClick={() => setMobileMenuOpen(false)} className="text-[#6B635B] hover:text-[#D4A574]">Reel</a>
-                <a href="#credits" onClick={() => setMobileMenuOpen(false)} className="text-[#6B635B] hover:text-[#D4A574]">Credits</a>
-                <a href="#skills" onClick={() => setMobileMenuOpen(false)} className="text-[#6B635B] hover:text-[#D4A574]">Skills</a>
-                <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="text-[#6B635B] hover:text-[#D4A574]">Contact</a>
-              </div>
-            </div>
-          )}
+          <a
+            href={CONFIG.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white"
+          >
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073z"/>
+            </svg>
+          </a>
         </div>
-      </nav>
+      </motion.nav>
 
-      {/* Hero Section */}
-      <header className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Warm decorative blobs */}
-        <div className="absolute top-20 right-10 w-72 h-72 bg-[#E8CDB5]/30 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 left-10 w-96 h-96 bg-[#D4A574]/20 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#F5F0E8] rounded-full blur-3xl"></div>
+      {/* HERO SECTION - Immersive */}
+      <motion.section
+        ref={heroRef}
+        style={{ opacity: heroOpacity, scale: heroScale }}
+        className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      >
+        {/* Animated Background */}
+        <div className="absolute inset-0">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px]"
+          >
+            <div className="absolute inset-0 bg-gradient-conic from-[#D4A574]/20 via-transparent to-[#D4A574]/20 rounded-full blur-3xl" />
+          </motion.div>
+          <motion.div
+            animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+            transition={{ duration: 8, repeat: Infinity }}
+            className="absolute top-20 right-20 w-96 h-96 bg-[#E8CDB5]/40 rounded-full blur-3xl"
+          />
+          <motion.div
+            animate={{ scale: [1.2, 1, 1.2], opacity: [0.3, 0.5, 0.3] }}
+            transition={{ duration: 10, repeat: Infinity }}
+            className="absolute bottom-20 left-20 w-[500px] h-[500px] bg-[#D4A574]/30 rounded-full blur-3xl"
+          />
+        </div>
 
-        <div className="relative z-10 text-center px-6 pt-20 max-w-4xl mx-auto">
-          <p className="font-sans text-sm tracking-[0.3em] uppercase text-[#D4A574] mb-6">
-            Actress • Singer • Storyteller
-          </p>
-          <h1 className="font-serif text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-medium mb-6 tracking-tight leading-[0.9]">
+        {/* Hero Content */}
+        <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="mb-6"
+          >
+            <span className="inline-flex items-center gap-2 px-4 py-2 bg-white/60 backdrop-blur-sm rounded-full text-sm text-[#6B635B] shadow-sm">
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+              Available for new projects
+            </span>
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            className="font-serif text-6xl sm:text-7xl md:text-8xl lg:text-[10rem] font-medium tracking-tight leading-[0.85] mb-8"
+          >
             <span className="block text-[#2C2824]">Mellisa</span>
-            <span className="block text-[#D4A574]">Goodwin</span>
-          </h1>
-          <p className="font-sans text-lg text-[#6B635B] mb-10 max-w-xl mx-auto leading-relaxed">
-            Bringing warmth and authenticity to every character.
-            Los Angeles based, ready for your next project.
-          </p>
+            <span className="block bg-gradient-to-r from-[#D4A574] via-[#C9A86C] to-[#D4A574] bg-clip-text text-transparent">
+              Goodwin
+            </span>
+          </motion.h1>
 
-          <div className="flex flex-wrap justify-center gap-4 mb-12">
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+            className="text-xl md:text-2xl text-[#6B635B] mb-12 max-w-2xl mx-auto font-light"
+          >
+            Actress · Singer · Storyteller
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+            className="flex flex-wrap justify-center gap-4"
+          >
             <button
-              onClick={() => openVideoModal()}
-              className="group inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#D4A574] to-[#B8956A] text-white font-sans font-medium rounded-full hover:shadow-lg hover:shadow-[#D4A574]/30 transition-all duration-300 hover:-translate-y-1"
+              onClick={() => setVideoModalOpen(true)}
+              className="group relative px-8 py-4 bg-[#2C2824] text-white rounded-full overflow-hidden"
             >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z"/>
-              </svg>
-              Watch Reel
+              <span className="relative z-10 flex items-center gap-2 font-medium">
+                <motion.span
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                </motion.span>
+                Watch Reel
+              </span>
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-[#D4A574] to-[#C9A86C]"
+                initial={{ x: "-100%" }}
+                whileHover={{ x: 0 }}
+                transition={{ duration: 0.3 }}
+              />
             </button>
             <a
               href="#contact"
-              className="inline-flex items-center gap-2 px-8 py-4 border-2 border-[#D4A574] text-[#D4A574] font-sans font-medium rounded-full hover:bg-[#D4A574] hover:text-white transition-all duration-300"
+              className="px-8 py-4 border-2 border-[#2C2824] text-[#2C2824] rounded-full font-medium hover:bg-[#2C2824] hover:text-white transition-all"
             >
               Get in Touch
             </a>
-          </div>
+          </motion.div>
 
-          {/* Quick Info Pills */}
-          <div className="flex flex-wrap justify-center gap-3 text-sm">
-            <span className="px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full text-[#6B635B] shadow-sm">SAG-AFTRA</span>
-            <span className="px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full text-[#6B635B] shadow-sm">Los Angeles</span>
-            <span className="px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full text-[#6B635B] shadow-sm">Film & TV</span>
-          </div>
-
-          {/* Scroll indicator */}
-          <div className="absolute bottom-10 left-1/2 -translate-x-1/2">
-            <a href="#about" className="text-[#D4A574]/50 hover:text-[#D4A574] transition-colors">
-              <svg className="w-6 h-6 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-              </svg>
-            </a>
-          </div>
+          {/* Stats Row */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1 }}
+            className="mt-20 flex justify-center gap-12 text-center"
+          >
+            {[
+              { value: "SAG-AFTRA", label: "Union" },
+              { value: "LA", label: "Based" },
+              { value: "2017", label: "Since" },
+            ].map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1 + i * 0.1 }}
+              >
+                <p className="text-2xl font-serif text-[#D4A574]">{stat.value}</p>
+                <p className="text-sm text-[#9B938A]">{stat.label}</p>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
-      </header>
 
-      {/* About Section */}
-      <section id="about" className="py-24 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Photo */}
-            <div className="relative">
-              <div className="aspect-[4/5] bg-gradient-to-br from-[#F5F0E8] to-[#E8CDB5] rounded-3xl overflow-hidden shadow-xl">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center p-8">
-                    <div className="w-36 h-36 mx-auto mb-6 rounded-full bg-gradient-to-br from-[#D4A574] to-[#C9A86C] flex items-center justify-center shadow-lg">
-                      <span className="font-serif text-5xl font-medium text-white">MG</span>
-                    </div>
-                    <a
-                      href={CONFIG.instagram}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-[#D4A574] hover:text-[#B8956A] font-sans text-sm transition-colors"
-                    >
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                      </svg>
-                      @mellisagoodwin
-                    </a>
-                  </div>
-                </div>
-              </div>
-              {/* Decorative element */}
-              <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-[#D4A574]/20 rounded-full blur-2xl"></div>
-            </div>
-
-            {/* Bio */}
-            <div>
-              <h2 className="font-serif text-4xl md:text-5xl font-medium mb-8 text-[#2C2824]">
-                Hello, I'm <span className="text-[#D4A574]">Mellisa</span> 🍯
-              </h2>
-
-              <div className="font-sans text-[#6B635B] space-y-5 leading-relaxed">
-                <p className="text-lg">
-                  I'm a multi-talented actress, singer, and performer based in sunny Los Angeles.
-                  My journey in the arts began at a performing arts school when I was just five years old.
-                </p>
-                <p>
-                  You might recognize me as <span className="text-[#D4A574] font-medium">Counselor Janet Mayer</span> from
-                  Law & Order: SVU, or as <span className="text-[#D4A574] font-medium">Lisa</span>, the rival newscaster
-                  in Wetlands. Most recently, I played <span className="text-[#D4A574] font-medium">Mikaela</span> in the
-                  horror short film We Never Sleep.
-                </p>
-                <p>
-                  Beyond acting, I'm also a singer-songwriter — I've written music for Netflix productions
-                  and love sharing my musical journey on Instagram.
-                </p>
-              </div>
-
-              {/* Stats */}
-              <div className="mt-10 grid grid-cols-3 gap-6">
-                <div className="text-center p-4 bg-white rounded-2xl shadow-sm">
-                  <p className="font-serif text-3xl text-[#D4A574] mb-1">5'6"</p>
-                  <p className="text-sm text-[#9B938A]">Height</p>
-                </div>
-                <div className="text-center p-4 bg-white rounded-2xl shadow-sm">
-                  <p className="font-serif text-3xl text-[#D4A574] mb-1">25-35</p>
-                  <p className="text-sm text-[#9B938A]">Age Range</p>
-                </div>
-                <div className="text-center p-4 bg-white rounded-2xl shadow-sm">
-                  <p className="font-serif text-3xl text-[#D4A574] mb-1">Alto</p>
-                  <p className="text-sm text-[#9B938A]">Vocal Range</p>
-                </div>
-              </div>
-            </div>
+        {/* Scroll Indicator */}
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2"
+        >
+          <div className="w-6 h-10 border-2 border-[#D4A574]/50 rounded-full flex justify-center pt-2">
+            <motion.div
+              animate={{ y: [0, 12, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+              className="w-1.5 h-1.5 bg-[#D4A574] rounded-full"
+            />
           </div>
+        </motion.div>
+      </motion.section>
+
+      {/* ABOUT - Bento Grid */}
+      <section id="about" className="py-32 px-6">
+        <div className="max-w-7xl mx-auto">
+          <AnimatedSection>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-[200px]">
+              {/* Main Bio Card */}
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                className="md:col-span-2 lg:row-span-2 p-8 bg-gradient-to-br from-[#D4A574] to-[#B8956A] rounded-3xl text-white relative overflow-hidden"
+              >
+                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+                <div className="relative z-10 h-full flex flex-col justify-between">
+                  <div>
+                    <span className="text-white/70 text-sm tracking-wider">ABOUT ME</span>
+                    <h2 className="font-serif text-4xl md:text-5xl mt-2">Hello, I'm Mellisa 🍯</h2>
+                  </div>
+                  <p className="text-white/90 text-lg leading-relaxed">
+                    Multi-talented actress, singer, and performer based in Los Angeles.
+                    From courtroom dramas to indie films, I bring authenticity to every role.
+                  </p>
+                </div>
+              </motion.div>
+
+              {/* Photo Card */}
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                className="lg:row-span-2 bg-gradient-to-br from-[#F5F0E8] to-[#E8CDB5] rounded-3xl flex items-center justify-center relative overflow-hidden"
+              >
+                <div className="text-center">
+                  <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-[#D4A574] to-[#C9A86C] flex items-center justify-center shadow-2xl">
+                    <span className="font-serif text-4xl text-white">MG</span>
+                  </div>
+                  <a
+                    href={CONFIG.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 mt-4 text-[#D4A574] text-sm hover:underline"
+                  >
+                    @mellisagoodwin
+                  </a>
+                </div>
+              </motion.div>
+
+              {/* Stats Cards */}
+              <StatCard value="5'6&quot;" label="Height" />
+              <StatCard value="25-35" label="Age Range" />
+              <StatCard value="Blonde" label="Hair" />
+              <StatCard value="Blue" label="Eyes" />
+
+              {/* Known For Card */}
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                className="md:col-span-2 p-6 bg-white rounded-3xl shadow-sm relative overflow-hidden"
+              >
+                <span className="text-[#9B938A] text-sm tracking-wider">KNOWN FOR</span>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {["Law & Order: SVU", "Law & Order", "We Never Sleep", "Wetlands"].map((show) => (
+                    <span key={show} className="px-4 py-2 bg-[#FAF8F5] rounded-full text-[#2C2824] text-sm">
+                      {show}
+                    </span>
+                  ))}
+                </div>
+              </motion.div>
+            </div>
+          </AnimatedSection>
         </div>
       </section>
 
-      {/* Demo Reel Section */}
-      <section id="reel" className="py-24 px-6 bg-white">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="font-serif text-4xl md:text-5xl font-medium mb-4 text-[#2C2824]">
-              Demo Reel
-            </h2>
-            <p className="font-sans text-[#6B635B]">
-              A glimpse into my work across film and television
-            </p>
-          </div>
+      {/* WORK / CREDITS - Horizontal Scroll */}
+      <section id="work" className="py-32 bg-[#2C2824] text-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 mb-12">
+          <AnimatedSection>
+            <span className="text-[#D4A574] text-sm tracking-wider">SELECTED WORK</span>
+            <h2 className="font-serif text-5xl md:text-6xl mt-2">Credits</h2>
+          </AnimatedSection>
+        </div>
 
-          {/* Main Video Player */}
-          <div
-            className="relative aspect-video bg-gradient-to-br from-[#F5F0E8] to-[#E8CDB5] rounded-3xl overflow-hidden shadow-xl cursor-pointer group"
-            onClick={() => openVideoModal()}
+        <div className="relative">
+          <motion.div
+            className="flex gap-6 px-6"
+            animate={{ x: [0, -1000, 0] }}
+            transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
           >
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center">
-                <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-white/90 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                  <svg className="w-8 h-8 text-[#D4A574] ml-1" fill="currentColor" viewBox="0 0 24 24">
+            {[...Array(2)].map((_, idx) => (
+              <div key={idx} className="flex gap-6">
+                <CreditCard
+                  title="Law & Order: SVU"
+                  role="Counselor Janet Mayer"
+                  year="2021"
+                  type="Co-Star"
+                  image="NBC"
+                />
+                <CreditCard
+                  title="Law & Order"
+                  role="Attorney"
+                  year="2020"
+                  type="Guest Star"
+                  image="NBC"
+                />
+                <CreditCard
+                  title="We Never Sleep"
+                  role="Mikaela"
+                  year="2023"
+                  type="Lead"
+                  image="Horror"
+                />
+                <CreditCard
+                  title="Wetlands"
+                  role="Lisa"
+                  year="2017"
+                  type="Series Regular"
+                  image="Drama"
+                />
+                <CreditCard
+                  title="Netflix"
+                  role="Singer/Songwriter"
+                  year="2023"
+                  type="Original Music"
+                  image="Music"
+                />
+              </div>
+            ))}
+          </motion.div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-6 mt-12">
+          <a
+            href={CONFIG.imdb}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-[#D4A574] hover:text-[#E8CDB5] transition-colors"
+          >
+            View full credits on IMDb
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+        </div>
+      </section>
+
+      {/* DEMO REEL */}
+      <section className="py-32 px-6">
+        <div className="max-w-5xl mx-auto">
+          <AnimatedSection>
+            <div className="text-center mb-12">
+              <span className="text-[#D4A574] text-sm tracking-wider">SHOWREEL</span>
+              <h2 className="font-serif text-5xl md:text-6xl mt-2 text-[#2C2824]">Demo Reel</h2>
+            </div>
+
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              onClick={() => setVideoModalOpen(true)}
+              className="relative aspect-video bg-[#2C2824] rounded-3xl overflow-hidden cursor-pointer group"
+            >
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  className="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-2xl"
+                >
+                  <svg className="w-10 h-10 text-[#2C2824] ml-1" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M8 5v14l11-7z"/>
                   </svg>
-                </div>
-                <p className="font-sans text-[#6B635B]">Click to play</p>
+                </motion.div>
               </div>
-            </div>
-          </div>
+              <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end">
+                <div>
+                  <p className="text-white text-xl font-medium">Acting Demo Reel 2024</p>
+                  <p className="text-white/60">Click to play</p>
+                </div>
+                <div className="flex gap-2">
+                  {["Dramatic", "Comedy", "Commercial"].map((type) => (
+                    <span key={type} className="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs">
+                      {type}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </AnimatedSection>
+        </div>
+      </section>
 
-          {/* Reel Categories */}
-          <div className="grid sm:grid-cols-3 gap-4 mt-8">
-            {[
-              { title: "Dramatic", duration: "1:45" },
-              { title: "Comedy", duration: "1:20" },
-              { title: "Commercial", duration: "0:60" },
-            ].map((reel) => (
-              <button
-                key={reel.title}
-                onClick={() => openVideoModal(reel.title.toLowerCase())}
-                className="p-5 bg-[#FAF8F5] rounded-2xl text-left hover:shadow-md transition-all duration-300 group"
+      {/* SKILLS */}
+      <section id="skills" className="py-32 px-6 bg-[#F5F0E8]">
+        <div className="max-w-7xl mx-auto">
+          <AnimatedSection>
+            <div className="text-center mb-16">
+              <span className="text-[#D4A574] text-sm tracking-wider">CAPABILITIES</span>
+              <h2 className="font-serif text-5xl md:text-6xl mt-2 text-[#2C2824]">Skills & Training</h2>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {/* Acting */}
+              <SkillCategory
+                title="Acting"
+                skills={["Meisner Technique", "On-Camera", "Stage Combat", "Improvisation", "Commercial"]}
+              />
+              {/* Music */}
+              <SkillCategory
+                title="Music & Voice"
+                skills={["Singing (Alto/Mezzo)", "Songwriting", "Vocal Range: Belt", "Recording Artist"]}
+              />
+              {/* Dialects */}
+              <SkillCategory
+                title="Dialects"
+                skills={["Standard American", "Southern American", "British RP", "Spanish (Conv.)"]}
+              />
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              className="mt-16 flex flex-wrap justify-center gap-3"
+            >
+              {[
+                "Legal/Courtroom",
+                "News Anchor",
+                "Teleprompter",
+                "Hosting",
+                "Stunts",
+                "Dance",
+                "Swimming",
+                "Yoga",
+                "Valid Passport",
+                "Licensed Driver",
+              ].map((skill) => (
+                <motion.span
+                  key={skill}
+                  whileHover={{ scale: 1.05, backgroundColor: "#D4A574", color: "#fff" }}
+                  className="px-4 py-2 bg-white rounded-full text-[#6B635B] text-sm cursor-default transition-colors"
+                >
+                  {skill}
+                </motion.span>
+              ))}
+            </motion.div>
+          </AnimatedSection>
+        </div>
+      </section>
+
+      {/* CONTACT */}
+      <section id="contact" className="py-32 px-6">
+        <div className="max-w-4xl mx-auto">
+          <AnimatedSection>
+            <div className="text-center mb-16">
+              <span className="text-[#D4A574] text-sm tracking-wider">LET'S CONNECT</span>
+              <h2 className="font-serif text-5xl md:text-7xl mt-2 text-[#2C2824]">Work with me</h2>
+              <p className="mt-6 text-xl text-[#6B635B] max-w-xl mx-auto">
+                Available for film, television, commercial, voiceover, and music collaborations.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <motion.a
+                href={`mailto:${CONFIG.representationEmail}`}
+                whileHover={{ scale: 1.02, y: -5 }}
+                className="p-8 bg-[#2C2824] text-white rounded-3xl group"
               >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="font-sans font-medium text-[#2C2824] group-hover:text-[#D4A574] transition-colors">{reel.title}</h4>
-                    <p className="text-sm text-[#9B938A]">{reel.duration}</p>
-                  </div>
-                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center group-hover:bg-[#D4A574]/10 transition-colors">
-                    <svg className="w-4 h-4 text-[#D4A574]" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z"/>
-                    </svg>
-                  </div>
+                <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#D4A574] transition-colors">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                  </svg>
                 </div>
-              </button>
-            ))}
-          </div>
+                <h3 className="font-serif text-2xl mb-2">Representation</h3>
+                <p className="text-white/60">Booking inquiries & management</p>
+              </motion.a>
 
-          {/* Instagram CTA */}
-          <div className="mt-12 text-center">
-            <a
-              href={CONFIG.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 text-white font-sans font-medium rounded-full hover:opacity-90 transition-all duration-300 hover:-translate-y-1 shadow-lg"
-            >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-              </svg>
-              More clips on Instagram
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* Credits Section */}
-      <section id="credits" className="py-24 px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="font-serif text-4xl md:text-5xl font-medium mb-4 text-[#2C2824]">
-              Credits
-            </h2>
-            <p className="font-sans text-[#6B635B]">
-              Selected work in film, television, and music
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            <CreditCard
-              title="Law & Order: SVU"
-              role="Counselor Janet Mayer"
-              type="Co-Star"
-              year="2021"
-              network="NBC"
-            />
-            <CreditCard
-              title="Law & Order"
-              role="Attorney"
-              type="Guest Star"
-              year="2020"
-              network="NBC"
-            />
-            <CreditCard
-              title="We Never Sleep"
-              role="Mikaela"
-              type="Lead"
-              year="2023"
-              network="Short Film"
-            />
-            <CreditCard
-              title="Wetlands"
-              role="Lisa"
-              type="Series Regular"
-              year="2017"
-              network="Streaming"
-            />
-            <CreditCard
-              title="Netflix Production"
-              role="Singer/Songwriter"
-              type="Original Music"
-              year="2023"
-              network="Netflix"
-            />
-          </div>
-
-          <div className="mt-10 text-center">
-            <a
-              href={CONFIG.imdb}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-[#D4A574] hover:text-[#B8956A] font-sans font-medium transition-colors"
-            >
-              View full credits on IMDb
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* Skills Section */}
-      <section id="skills" className="py-24 px-6 bg-white">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="font-serif text-4xl md:text-5xl font-medium mb-4 text-[#2C2824]">
-              Skills & Training
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-12">
-            {/* Special Skills */}
-            <div>
-              <h3 className="font-sans text-sm tracking-wider uppercase text-[#D4A574] mb-6">Special Skills</h3>
-              <div className="flex flex-wrap gap-2">
-                {[
-                  "Singing (Alto/Mezzo)",
-                  "Songwriting",
-                  "Legal/Courtroom",
-                  "News Anchor",
-                  "Teleprompter",
-                  "Hosting",
-                  "Stage Combat",
-                  "Stunts",
-                  "Improvisation",
-                  "Commercial",
-                  "Dance",
-                  "Swimming",
-                  "Yoga",
-                ].map((skill) => (
-                  <span
-                    key={skill}
-                    className="px-4 py-2 bg-[#FAF8F5] text-[#6B635B] rounded-full text-sm hover:bg-[#E8CDB5]/50 hover:text-[#2C2824] transition-colors cursor-default"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
+              <motion.a
+                href={`mailto:${CONFIG.pressEmail}`}
+                whileHover={{ scale: 1.02, y: -5 }}
+                className="p-8 bg-white rounded-3xl shadow-lg group"
+              >
+                <div className="w-14 h-14 bg-[#FAF8F5] rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#D4A574] group-hover:text-white transition-colors">
+                  <svg className="w-6 h-6 text-[#D4A574] group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h3 className="font-serif text-2xl text-[#2C2824] mb-2">General Inquiries</h3>
+                <p className="text-[#6B635B]">Press, media & collaborations</p>
+              </motion.a>
             </div>
 
-            {/* Dialects */}
-            <div>
-              <h3 className="font-sans text-sm tracking-wider uppercase text-[#D4A574] mb-6">Dialects & Languages</h3>
-              <div className="flex flex-wrap gap-2">
-                {[
-                  "Standard American",
-                  "Southern American",
-                  "British RP",
-                  "Spanish (Conversational)",
-                ].map((dialect) => (
-                  <span
-                    key={dialect}
-                    className="px-4 py-2 bg-[#FAF8F5] text-[#6B635B] rounded-full text-sm hover:bg-[#E8CDB5]/50 hover:text-[#2C2824] transition-colors cursor-default"
-                  >
-                    {dialect}
-                  </span>
-                ))}
-              </div>
-
-              <h3 className="font-sans text-sm tracking-wider uppercase text-[#D4A574] mb-6 mt-10">Physical</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 bg-[#FAF8F5] rounded-xl">
-                  <p className="text-sm text-[#9B938A]">Hair</p>
-                  <p className="font-medium text-[#2C2824]">Blonde</p>
-                </div>
-                <div className="p-4 bg-[#FAF8F5] rounded-xl">
-                  <p className="text-sm text-[#9B938A]">Eyes</p>
-                  <p className="font-medium text-[#2C2824]">Blue</p>
-                </div>
-                <div className="p-4 bg-[#FAF8F5] rounded-xl">
-                  <p className="text-sm text-[#9B938A]">Height</p>
-                  <p className="font-medium text-[#2C2824]">5'6"</p>
-                </div>
-                <div className="p-4 bg-[#FAF8F5] rounded-xl">
-                  <p className="text-sm text-[#9B938A]">Ethnicity</p>
-                  <p className="font-medium text-[#2C2824]">Caucasian</p>
-                </div>
-              </div>
+            {/* Social Links */}
+            <div className="mt-16 flex justify-center gap-4">
+              {[
+                { href: CONFIG.instagram, label: "IG", gradient: true },
+                { href: CONFIG.imdb, label: "IMDb", gradient: false },
+                { href: CONFIG.backstage, label: "BS", gradient: false },
+              ].map((link) => (
+                <motion.a
+                  key={link.label}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.1, y: -3 }}
+                  className={`w-14 h-14 rounded-full flex items-center justify-center font-bold text-sm shadow-lg ${
+                    link.gradient
+                      ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white"
+                      : "bg-white text-[#D4A574]"
+                  }`}
+                >
+                  {link.label}
+                </motion.a>
+              ))}
             </div>
-          </div>
+          </AnimatedSection>
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section id="contact" className="py-24 px-6">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="font-serif text-4xl md:text-5xl font-medium mb-4 text-[#2C2824]">
-            Let's Work Together
-          </h2>
-          <p className="font-sans text-[#6B635B] mb-12 max-w-xl mx-auto">
-            Available for film, television, commercial, and voiceover work.
-            I'd love to hear about your project.
-          </p>
-
-          <div className="grid sm:grid-cols-2 gap-6 mb-12">
-            <a
-              href={`mailto:${CONFIG.representationEmail}`}
-              className="p-8 bg-white rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 group"
-            >
-              <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-[#D4A574]/10 flex items-center justify-center group-hover:bg-[#D4A574]/20 transition-colors">
-                <svg className="w-6 h-6 text-[#D4A574]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
-              </div>
-              <h3 className="font-serif text-xl mb-2 text-[#2C2824]">Representation</h3>
-              <p className="text-sm text-[#9B938A]">For booking inquiries</p>
-            </a>
-
-            <a
-              href={`mailto:${CONFIG.pressEmail}`}
-              className="p-8 bg-white rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 group"
-            >
-              <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-[#D4A574]/10 flex items-center justify-center group-hover:bg-[#D4A574]/20 transition-colors">
-                <svg className="w-6 h-6 text-[#D4A574]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <h3 className="font-serif text-xl mb-2 text-[#2C2824]">General</h3>
-              <p className="text-sm text-[#9B938A]">Press & media inquiries</p>
-            </a>
-          </div>
-
-          {/* Social Links */}
-          <div className="flex justify-center gap-4">
-            <a
-              href={CONFIG.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-4 bg-white rounded-full shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300"
-              aria-label="Instagram"
-            >
-              <svg className="w-6 h-6 text-[#D4A574]" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-              </svg>
-            </a>
-            <a
-              href={CONFIG.imdb}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-4 bg-white rounded-full shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300"
-              aria-label="IMDb"
-            >
-              <span className="text-[#D4A574] font-bold">IMDb</span>
-            </a>
-            <a
-              href={CONFIG.backstage}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-4 bg-white rounded-full shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300"
-              aria-label="Backstage"
-            >
-              <span className="text-[#D4A574] font-bold text-sm">BS</span>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="py-10 px-6 border-t border-[#E8CDB5]/30">
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="font-serif text-xl text-[#2C2824]">
+      {/* FOOTER */}
+      <footer className="py-12 px-6 border-t border-[#E8CDB5]/50">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="font-serif text-2xl text-[#2C2824]">
             Mellisa Goodwin <span className="text-[#D4A574]">🍯</span>
           </p>
-          <p className="font-sans text-sm text-[#9B938A]">
-            © {new Date().getFullYear()} All rights reserved
+          <p className="text-[#9B938A] text-sm">
+            © {new Date().getFullYear()} · Los Angeles, CA
           </p>
         </div>
       </footer>
@@ -598,39 +577,76 @@ export default function Home() {
   );
 }
 
-// Credit Card Component
-function CreditCard({
-  title,
-  role,
-  type,
-  year,
-  network,
-}: {
+// Animated Section Wrapper
+function AnimatedSection({ children }: { children: React.ReactNode }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 50 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+// Stat Card
+function StatCard({ value, label }: { value: string; label: string }) {
+  return (
+    <motion.div
+      whileHover={{ scale: 1.05 }}
+      className="p-6 bg-white rounded-3xl shadow-sm flex flex-col justify-center items-center"
+    >
+      <p className="font-serif text-3xl text-[#D4A574]" dangerouslySetInnerHTML={{ __html: value }} />
+      <p className="text-sm text-[#9B938A] mt-1">{label}</p>
+    </motion.div>
+  );
+}
+
+// Credit Card
+function CreditCard({ title, role, year, type, image }: {
   title: string;
   role: string;
-  type: string;
   year: string;
-  network: string;
+  type: string;
+  image: string;
 }) {
   return (
-    <div className="p-6 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 group">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h4 className="font-serif text-xl text-[#2C2824] group-hover:text-[#D4A574] transition-colors">
-            {title}
-          </h4>
-          <p className="text-[#6B635B]">{role}</p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="px-3 py-1 text-xs bg-[#D4A574]/10 text-[#D4A574] rounded-full font-medium">
-            {type}
-          </span>
-          <span className="px-3 py-1 text-xs bg-[#F5F0E8] text-[#6B635B] rounded-full">
-            {network}
-          </span>
-          <span className="text-sm font-medium text-[#9B938A]">{year}</span>
-        </div>
+    <motion.div
+      whileHover={{ y: -10 }}
+      className="flex-shrink-0 w-80 p-6 bg-white/5 backdrop-blur-sm rounded-3xl border border-white/10"
+    >
+      <div className="flex justify-between items-start mb-4">
+        <span className="px-3 py-1 bg-[#D4A574] text-white text-xs rounded-full">{type}</span>
+        <span className="text-white/50 text-sm">{year}</span>
       </div>
-    </div>
+      <h3 className="font-serif text-2xl text-white mb-2">{title}</h3>
+      <p className="text-white/70">{role}</p>
+      <p className="text-white/40 text-sm mt-2">{image}</p>
+    </motion.div>
+  );
+}
+
+// Skill Category
+function SkillCategory({ title, skills }: { title: string; skills: string[] }) {
+  return (
+    <motion.div
+      whileHover={{ y: -5 }}
+      className="p-8 bg-white rounded-3xl shadow-sm"
+    >
+      <h3 className="font-serif text-2xl text-[#2C2824] mb-6">{title}</h3>
+      <div className="space-y-3">
+        {skills.map((skill) => (
+          <div key={skill} className="flex items-center gap-3">
+            <div className="w-2 h-2 bg-[#D4A574] rounded-full" />
+            <span className="text-[#6B635B]">{skill}</span>
+          </div>
+        ))}
+      </div>
+    </motion.div>
   );
 }
