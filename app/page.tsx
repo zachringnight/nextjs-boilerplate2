@@ -43,9 +43,14 @@ export default function Home() {
         return;
       }
 
-      const focusableElements = modalRef.current.querySelectorAll(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      );
+      const focusableElements = Array.from(
+        modalRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((el) => {
+        const tabindex = el.getAttribute("tabindex");
+        return !tabindex || parseInt(tabindex, 10) >= 0;
+      });
       
       if (focusableElements.length === 0) {
         // No focusable elements, prevent tabbing
@@ -53,18 +58,20 @@ export default function Home() {
         return;
       }
 
-      const firstElement = focusableElements[0] as HTMLElement;
-      const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+      const isModalFocused = document.activeElement === modalRef.current;
+      const isFocusInModal = focusableElements.includes(document.activeElement as HTMLElement);
 
       if (event.shiftKey) {
         // Shift+Tab: moving backwards
-        if (document.activeElement === firstElement) {
+        if (isModalFocused || document.activeElement === firstElement) {
           event.preventDefault();
           lastElement.focus();
         }
       } else {
         // Tab: moving forwards
-        if (document.activeElement === lastElement) {
+        if (isModalFocused || document.activeElement === lastElement || !isFocusInModal) {
           event.preventDefault();
           firstElement.focus();
         }
@@ -72,8 +79,8 @@ export default function Home() {
     };
 
     // Lock body scroll while the modal is open
-    const originalOverflow = document.body.style.overflow;
     const hadOverflowStyle = document.body.style.overflow !== "";
+    const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
     // Focus the modal container when it opens
