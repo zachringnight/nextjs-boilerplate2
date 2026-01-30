@@ -16,6 +16,8 @@ const CONFIG = {
 export default function Home() {
   const [videoModalOpen, setVideoModalOpen] = useState(false);
   const heroRef = useRef(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
   const { scrollYProgress } = useScroll();
   const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
   const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95]);
@@ -26,9 +28,39 @@ export default function Home() {
       return;
     }
 
+    // Save the currently focused element to restore later
+    previousFocusRef.current = document.activeElement as HTMLElement;
+
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setVideoModalOpen(false);
+      }
+    };
+
+    // Focus trap: prevent tabbing outside the modal
+    const handleTab = (event: KeyboardEvent) => {
+      if (event.key !== "Tab" || !modalRef.current) {
+        return;
+      }
+
+      const focusableElements = modalRef.current.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      const firstElement = focusableElements[0] as HTMLElement;
+      const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+      if (event.shiftKey) {
+        // Shift+Tab: moving backwards
+        if (document.activeElement === firstElement) {
+          event.preventDefault();
+          lastElement?.focus();
+        }
+      } else {
+        // Tab: moving forwards
+        if (document.activeElement === lastElement) {
+          event.preventDefault();
+          firstElement?.focus();
+        }
       }
     };
 
@@ -36,12 +68,21 @@ export default function Home() {
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
+    // Focus the modal container when it opens
+    if (modalRef.current) {
+      modalRef.current.focus();
+    }
+
     document.addEventListener("keydown", handleEscape);
+    document.addEventListener("keydown", handleTab);
 
     return () => {
       document.removeEventListener("keydown", handleEscape);
+      document.removeEventListener("keydown", handleTab);
       // Restore original body overflow when modal closes
       document.body.style.overflow = originalOverflow;
+      // Restore focus to the element that opened the modal
+      previousFocusRef.current?.focus();
     };
   }, [videoModalOpen]);
 
@@ -51,6 +92,7 @@ export default function Home() {
       <AnimatePresence>
         {videoModalOpen && (
           <motion.div
+            ref={modalRef}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -59,6 +101,7 @@ export default function Home() {
             role="dialog"
             aria-modal="true"
             aria-label="Demo Reel Video"
+            tabIndex={-1}
           >
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
@@ -294,7 +337,7 @@ export default function Home() {
                 <div className="relative z-10 h-full flex flex-col justify-between">
                   <div>
                     <span className="text-white/70 text-sm tracking-wider">ABOUT ME</span>
-                    <h2 className="font-serif text-4xl md:text-5xl mt-2">Hello, I'm Mellisa 🍯</h2>
+                    <h2 className="font-serif text-4xl md:text-5xl mt-2">Hello, I&apos;m Mellisa 🍯</h2>
                   </div>
                   <p className="text-white/90 text-lg leading-relaxed">
                     Multi-talented actress, singer, and performer based in Los Angeles.
@@ -525,7 +568,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto">
           <AnimatedSection>
             <div className="text-center mb-16">
-              <span className="text-[#D4A574] text-sm tracking-wider">LET'S CONNECT</span>
+              <span className="text-[#D4A574] text-sm tracking-wider">LET&apos;S CONNECT</span>
               <h2 className="font-serif text-5xl md:text-7xl mt-2 text-[#2C2824]">Work with me</h2>
               <p className="mt-6 text-xl text-[#6B635B] max-w-xl mx-auto">
                 Available for film, television, commercial, voiceover, and music collaborations.
