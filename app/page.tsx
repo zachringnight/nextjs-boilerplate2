@@ -20,18 +20,29 @@ export default function Home() {
   const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
   const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95]);
 
-  // Handle Escape key to close modal
+  // Handle Escape key to close modal and prevent body scroll when modal is open
   useEffect(() => {
+    if (!videoModalOpen) {
+      return;
+    }
+
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && videoModalOpen) {
+      if (event.key === "Escape") {
         setVideoModalOpen(false);
       }
     };
 
-    if (videoModalOpen) {
-      document.addEventListener("keydown", handleEscape);
-      return () => document.removeEventListener("keydown", handleEscape);
-    }
+    // Lock body scroll while the modal is open
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+      // Restore original body overflow when modal closes
+      document.body.style.overflow = originalOverflow;
+    };
   }, [videoModalOpen]);
 
   return (
