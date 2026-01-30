@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
 
 // Configuration
@@ -20,6 +20,20 @@ export default function Home() {
   const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
   const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95]);
 
+  // Handle Escape key to close modal
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && videoModalOpen) {
+        setVideoModalOpen(false);
+      }
+    };
+
+    if (videoModalOpen) {
+      document.addEventListener("keydown", handleEscape);
+      return () => document.removeEventListener("keydown", handleEscape);
+    }
+  }, [videoModalOpen]);
+
   return (
     <div className="min-h-screen bg-[#FAF8F5] text-[#2C2824] overflow-x-hidden">
       {/* Video Modal */}
@@ -31,6 +45,9 @@ export default function Home() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4"
             onClick={() => setVideoModalOpen(false)}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Demo Reel Video"
           >
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
