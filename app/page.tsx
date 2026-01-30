@@ -104,6 +104,7 @@ export default function Home() {
             href={CONFIG.instagram}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Visit Instagram profile"
             className="w-8 h-8 flex items-center justify-center rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white"
           >
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
