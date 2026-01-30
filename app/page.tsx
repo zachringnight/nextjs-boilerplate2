@@ -46,6 +46,13 @@ export default function Home() {
       const focusableElements = modalRef.current.querySelectorAll(
         'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
       );
+      
+      if (focusableElements.length === 0) {
+        // No focusable elements, prevent tabbing
+        event.preventDefault();
+        return;
+      }
+
       const firstElement = focusableElements[0] as HTMLElement;
       const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
 
@@ -53,19 +60,20 @@ export default function Home() {
         // Shift+Tab: moving backwards
         if (document.activeElement === firstElement) {
           event.preventDefault();
-          lastElement?.focus();
+          lastElement.focus();
         }
       } else {
         // Tab: moving forwards
         if (document.activeElement === lastElement) {
           event.preventDefault();
-          firstElement?.focus();
+          firstElement.focus();
         }
       }
     };
 
     // Lock body scroll while the modal is open
     const originalOverflow = document.body.style.overflow;
+    const hadOverflowStyle = document.body.style.overflow !== "";
     document.body.style.overflow = "hidden";
 
     // Focus the modal container when it opens
@@ -80,7 +88,11 @@ export default function Home() {
       document.removeEventListener("keydown", handleEscape);
       document.removeEventListener("keydown", handleTab);
       // Restore original body overflow when modal closes
-      document.body.style.overflow = originalOverflow;
+      if (hadOverflowStyle) {
+        document.body.style.overflow = originalOverflow;
+      } else {
+        document.body.style.removeProperty("overflow");
+      }
       // Restore focus to the element that opened the modal
       previousFocusRef.current?.focus();
     };
