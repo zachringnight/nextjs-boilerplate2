@@ -14,7 +14,6 @@ const CONFIG = {
 };
 
 export default function Home() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [videoModalOpen, setVideoModalOpen] = useState(false);
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll();
