@@ -594,13 +594,13 @@ function AnimatedSection({ children }: { children: React.ReactNode }) {
 }
 
 // Stat Card
-function StatCard({ value, label }: { value: string; label: string }) {
+function StatCard({ value, label }: { value: React.ReactNode; label: React.ReactNode }) {
   return (
     <motion.div
       whileHover={{ scale: 1.05 }}
       className="p-6 bg-white rounded-3xl shadow-sm flex flex-col justify-center items-center"
     >
-      <p className="font-serif text-3xl text-[#D4A574]" dangerouslySetInnerHTML={{ __html: value }} />
+      <p className="font-serif text-3xl text-[#D4A574]">{value}</p>
       <p className="text-sm text-[#9B938A] mt-1">{label}</p>
     </motion.div>
   );
