@@ -25,9 +25,9 @@ export default function MediaRecap() {
   const [activeClip, setActiveClip] = useState<Clip | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  const eventTitle = "Super Bowl LX Prizm Lounge";
+  const eventTitle = "Senior Bowl";
   const eventSubtitle = "Earned Media Recap";
-  const eventDate = "February 5–7, 2026";
+  const eventDate = "February 1, 2026";
   const totalClips = CLIPS.length;
 
   return (
