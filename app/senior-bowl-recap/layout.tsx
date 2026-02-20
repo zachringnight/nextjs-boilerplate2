@@ -3,11 +3,11 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Senior Bowl | Earned Media Recap - Panini America",
   description:
-    "Panini America Senior Bowl earned media recap. Watch all TV segments and coverage from the February 2026 Senior Bowl.",
+    "Panini America Senior Bowl earned media recap. Watch all video segments and coverage from the February 2026 Senior Bowl.",
   openGraph: {
     title: "Senior Bowl | Earned Media Recap",
     description:
-      "Panini America Senior Bowl earned media recap featuring TV coverage segments.",
+      "Panini America Senior Bowl earned media recap featuring video coverage segments.",
     type: "website",
   },
   robots: {

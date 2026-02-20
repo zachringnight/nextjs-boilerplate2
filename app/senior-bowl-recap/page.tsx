@@ -4,20 +4,15 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 
 const CLIPS = [
-  { id: "clip-1", label: "Clip 1", url: "https://iqmediacorp.com/ExternalIframeMedia?mediaID=0c851955-e04a-48cb-aabd-9bd803ba90de&isRM=false&rawMediaType=TV&end=true" },
-  { id: "clip-2", label: "Clip 2", url: "https://iqmediacorp.com/ExternalIframeMedia?mediaID=41820d49-dcfe-422b-9a82-e08e246e8eca&isRM=false&rawMediaType=TV&end=true" },
-  { id: "clip-3", label: "Clip 3", url: "https://iqmediacorp.com/ExternalIframeMedia?mediaID=45739d48-11bf-47b8-a18e-0f3849a6c06c&isRM=false&rawMediaType=TV&end=true" },
-  { id: "clip-4", label: "Clip 4", url: "https://iqmediacorp.com/ExternalIframeMedia?mediaID=1ecbc356-4c24-4ed8-8f1d-d9d0cb08841c&isRM=false&rawMediaType=TV&end=true" },
-  { id: "clip-5", label: "Clip 5", url: "https://iqmediacorp.com/ExternalIframeMedia?mediaID=de0362e6-6e0c-4aa7-978d-bc918370190c&isRM=false&rawMediaType=TV&end=true" },
-  { id: "clip-6", label: "Clip 6", url: "https://iqmediacorp.com/ExternalIframeMedia?mediaID=cf37449b-1474-467c-b839-b9a3edff9681&isRM=false&rawMediaType=TV&end=true" },
-  { id: "clip-7", label: "Clip 7", url: "https://iqmediacorp.com/ExternalIframeMedia?mediaID=44e7993e-8d91-4fe0-a411-bae915482e6b&isRM=false&rawMediaType=TV&end=true" },
-  { id: "clip-8", label: "Clip 8", url: "https://iqmediacorp.com/ExternalIframeMedia?mediaID=b32641b2-bb06-4dc0-8a36-450c88b06ba6&isRM=false&rawMediaType=TV&end=true" },
-  { id: "clip-9", label: "Clip 9", url: "https://iqmediacorp.com/ExternalIframeMedia?mediaID=b32641b2-bb06-4dc0-8a36-450c88b06ba6&isRM=false&rawMediaType=TV&end=true" },
-  { id: "clip-10", label: "Clip 10", url: "https://iqmediacorp.com/ExternalIframeMedia?mediaID=287dfd0a-5f1b-4682-ace7-96b83b97809c&isRM=false&rawMediaType=TV&end=true" },
-  { id: "clip-11", label: "Clip 11", url: "https://iqmediacorp.com/ExternalIframeMedia?mediaID=53c442aa-bc3a-48fa-bd16-95c8b0446929&isRM=false&rawMediaType=TV&end=true" },
-  { id: "clip-12", label: "Clip 12", url: "https://iqmediacorp.com/ExternalIframeMedia?mediaID=1e226e83-7df7-4c1f-a7e0-03630400b50a&isRM=false&rawMediaType=TV&end=true" },
-  { id: "clip-13", label: "Clip 13", url: "https://iqmediacorp.com/ExternalIframeMedia?mediaID=0ca38296-6dfc-45ff-a28f-22dac9689389&isRM=false&rawMediaType=TV&end=true" },
-  { id: "clip-14", label: "Clip 14", url: "https://iqmediacorp.com/ExternalIframeMedia?mediaID=9f051c63-37e3-4160-987a-32fee7e04447&isRM=false&rawMediaType=TV&end=true" },
+  { id: "clip-5", label: "Clip 5", url: "https://www.youtube.com/embed/3OxsE5F8Vns" },
+  { id: "clip-6", label: "Clip 6", url: "https://www.youtube.com/embed/jDKg8AKk6AI" },
+  { id: "clip-7", label: "Clip 7", url: "https://www.youtube.com/embed/1GHDCk_61Ts" },
+  { id: "clip-8", label: "Clip 8", url: "https://www.youtube.com/embed/5LuvYjPP0UU" },
+  { id: "clip-9", label: "Clip 9", url: "https://www.youtube.com/embed/qp6TdD506x0" },
+  { id: "clip-10", label: "Clip 10", url: "https://www.youtube.com/embed/pePTwoh8Pdg" },
+  { id: "clip-11", label: "Clip 11", url: "https://www.youtube.com/embed/a2oas9lkzJs" },
+  { id: "clip-12", label: "Clip 12", url: "https://www.youtube.com/embed/vNJOKXFhFFo" },
+  { id: "clip-13", label: "Clip 13", url: "https://www.youtube.com/embed/-LXPYtsmQ-8" },
 ];
 
 type Clip = (typeof CLIPS)[number];
@@ -111,6 +106,7 @@ export default function SeniorBowlRecap() {
                     className="absolute inset-0 w-full h-full border-none"
                     allowFullScreen
                     loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     title={activeClip.label}
                   />
                 </div>
@@ -265,7 +261,7 @@ function ClipCard({
           </p>
         </div>
         <span className="text-[10px] font-semibold text-white/20 bg-white/[0.04] px-2 py-1 rounded tracking-wider">
-          TV
+          YT
         </span>
       </div>
     </motion.button>
