@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 
 const CLIPS = [
@@ -25,14 +25,28 @@ type Clip = (typeof CLIPS)[number];
 export default function SeniorBowlRecap() {
   const [activeClip, setActiveClip] = useState<Clip | null>(null);
   const playerRef = useRef<HTMLDivElement>(null);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleSelectClip = (clip: Clip) => {
     setActiveClip(clip);
+    // Clear any existing timeout before scheduling a new one
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
     // Scroll to player on mobile
-    setTimeout(() => {
+    scrollTimeoutRef.current = setTimeout(() => {
       playerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 100);
   };
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#070a0f] text-[#e8e6e3]">
@@ -96,18 +110,20 @@ export default function SeniorBowlRecap() {
                     src={activeClip.url}
                     className="absolute inset-0 w-full h-full border-none"
                     allowFullScreen
+                    loading="lazy"
                     title={activeClip.label}
                   />
                 </div>
               </motion.div>
             ) : (
-              <motion.div
+              <motion.button
                 key="placeholder"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="relative w-full aspect-video max-w-4xl bg-gradient-to-br from-[#0d1117] to-[#111827] rounded-xl overflow-hidden border border-white/[0.06] flex items-center justify-center cursor-pointer group"
+                className="relative w-full aspect-video max-w-4xl bg-gradient-to-br from-[#0d1117] to-[#111827] rounded-xl overflow-hidden border border-white/[0.06] flex items-center justify-center cursor-pointer group focus:outline-none focus:ring-2 focus:ring-[#0055BF] focus:ring-offset-2 focus:ring-offset-[#070a0f]"
                 onClick={() => handleSelectClip(CLIPS[0])}
+                aria-label="Start playing first clip"
               >
                 <div className="text-center">
                   <motion.div
@@ -120,7 +136,7 @@ export default function SeniorBowlRecap() {
                   </motion.div>
                   <p className="text-white/50 text-sm">Select a clip below or click to start</p>
                 </div>
-              </motion.div>
+              </motion.button>
             )}
           </AnimatePresence>
         </div>
@@ -180,18 +196,20 @@ function ClipCard({
   const isInView = useInView(ref, { once: true, margin: "-50px" });
 
   return (
-    <motion.div
+    <motion.button
       ref={ref}
       initial={{ opacity: 0, y: 20 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
       transition={{ duration: 0.4, delay: Math.min(index * 0.05, 0.3) }}
       whileHover={{ y: -4 }}
       onClick={() => onSelect(clip)}
-      className={`group relative rounded-xl overflow-hidden cursor-pointer transition-all duration-200 ${
+      className={`group relative rounded-xl overflow-hidden cursor-pointer transition-all duration-200 text-left w-full focus:outline-none focus:ring-2 focus:ring-[#0055BF] focus:ring-offset-2 focus:ring-offset-[#070a0f] ${
         isActive
           ? "ring-2 ring-[#0055BF] bg-[#0055BF]/10"
           : "bg-[#0d1117] hover:bg-[#111827] border border-white/[0.06] hover:border-white/[0.12]"
       }`}
+      aria-label={`Play ${clip.label}`}
+      aria-pressed={isActive}
     >
       {/* Thumbnail placeholder */}
       <div className="relative aspect-video bg-gradient-to-br from-[#111827] to-[#0d1117] flex items-center justify-center">
@@ -250,6 +268,6 @@ function ClipCard({
           TV
         </span>
       </div>
-    </motion.div>
+    </motion.button>
   );
 }
